@@ -21,7 +21,7 @@ if (!defined('TCC_GG_ENHANCED_URL')) {
     define('TCC_GG_ENHANCED_URL', plugin_dir_url(__FILE__));
 }
 if (!defined('TCC_GG_ENHANCED_VERSION')) {
-    define('TCC_GG_ENHANCED_VERSION', '2.0.0');
+    define('TCC_GG_ENHANCED_VERSION', '2.0.1');
 }
 
 // Includes
@@ -119,6 +119,11 @@ add_shortcode('tcc_debug_enhanced', function() {
 
 // Enqueue assets on frontend (always load for now)
 add_action('wp_enqueue_scripts', function () {
+    // Debug: Output the CSS URL
+    if (current_user_can('administrator')) {
+        error_log('TCC GG Enhanced - CSS URL: ' . TCC_GG_ENHANCED_URL . 'assets/css/style.css');
+    }
+    
     // Enqueue GSAP from CDN
     wp_register_script('gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', [], '3.12.2', true);
     wp_register_script('gsap-scrolltrigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', ['gsap'], '3.12.2', true);
@@ -131,7 +136,7 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_script('gsap');
     wp_enqueue_script('gsap-scrolltrigger');
     wp_enqueue_script('tcc-gig-guide-enhanced');
-});
+}, 10);
 
 // Enqueue ACF field assets in admin
 add_action('acf/input/admin_enqueue_scripts', function() {

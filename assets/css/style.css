@@ -127,11 +127,11 @@
 
 /* Grid Layout */
 .tcc-gig-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 25px !important;
     margin-top: 20px;
-    grid-auto-rows: 1fr; /* Make all rows the same height */
+    grid-auto-rows: 1fr !important; /* Make all rows the same height */
 }
 
 /* Individual Card */
