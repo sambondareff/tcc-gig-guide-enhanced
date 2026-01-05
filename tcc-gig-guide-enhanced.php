@@ -119,14 +119,18 @@ add_shortcode('tcc_debug_enhanced', function() {
 
 // Enqueue assets only when shortcode is present
 add_action('wp_enqueue_scripts', function () {
-    if (!is_singular()) {
-        return;
-    }
     global $post;
-    if (!$post) {
-        return;
+    
+    // Check if shortcode exists in post content
+    $has_shortcode = false;
+    if ($post && has_shortcode($post->post_content, 'tcc_gig_guide')) {
+        $has_shortcode = true;
     }
-    if (has_shortcode($post->post_content, 'tcc_gig_guide') || has_shortcode($post->post_content, 'tcc_whats_on')) {
+    if ($post && has_shortcode($post->post_content, 'tcc_whats_on')) {
+        $has_shortcode = true;
+    }
+    
+    if ($has_shortcode) {
         // Enqueue GSAP from CDN
         wp_register_script('gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', [], '3.12.2', true);
         wp_register_script('gsap-scrolltrigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', ['gsap'], '3.12.2', true);
