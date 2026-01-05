@@ -117,33 +117,20 @@ add_shortcode('tcc_debug_enhanced', function() {
     return $output;
 });
 
-// Enqueue assets only when shortcode is present
+// Enqueue assets on frontend (always load for now)
 add_action('wp_enqueue_scripts', function () {
-    global $post;
+    // Enqueue GSAP from CDN
+    wp_register_script('gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', [], '3.12.2', true);
+    wp_register_script('gsap-scrolltrigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', ['gsap'], '3.12.2', true);
     
-    // Check if shortcode exists in post content
-    $has_shortcode = false;
-    if ($post && has_shortcode($post->post_content, 'tcc_gig_guide')) {
-        $has_shortcode = true;
-    }
-    if ($post && has_shortcode($post->post_content, 'tcc_whats_on')) {
-        $has_shortcode = true;
-    }
+    // Register and enqueue plugin assets
+    wp_register_style('tcc-gig-guide-enhanced', TCC_GG_ENHANCED_URL . 'assets/css/style.css', [], TCC_GG_ENHANCED_VERSION);
+    wp_register_script('tcc-gig-guide-enhanced', TCC_GG_ENHANCED_URL . 'assets/js/script.js', ['gsap', 'gsap-scrolltrigger'], TCC_GG_ENHANCED_VERSION, true);
     
-    if ($has_shortcode) {
-        // Enqueue GSAP from CDN
-        wp_register_script('gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js', [], '3.12.2', true);
-        wp_register_script('gsap-scrolltrigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js', ['gsap'], '3.12.2', true);
-        
-        // Register and enqueue plugin assets
-        wp_register_style('tcc-gig-guide-enhanced', TCC_GG_ENHANCED_URL . 'assets/css/style.css', [], TCC_GG_ENHANCED_VERSION);
-        wp_register_script('tcc-gig-guide-enhanced', TCC_GG_ENHANCED_URL . 'assets/js/script.js', ['gsap', 'gsap-scrolltrigger'], TCC_GG_ENHANCED_VERSION, true);
-        
-        wp_enqueue_style('tcc-gig-guide-enhanced');
-        wp_enqueue_script('gsap');
-        wp_enqueue_script('gsap-scrolltrigger');
-        wp_enqueue_script('tcc-gig-guide-enhanced');
-    }
+    wp_enqueue_style('tcc-gig-guide-enhanced');
+    wp_enqueue_script('gsap');
+    wp_enqueue_script('gsap-scrolltrigger');
+    wp_enqueue_script('tcc-gig-guide-enhanced');
 });
 
 // Enqueue ACF field assets in admin
