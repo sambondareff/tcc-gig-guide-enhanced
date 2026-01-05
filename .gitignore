@@ -1,0 +1,27 @@
+# WordPress
+.DS_Store
+.htaccess
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Temporary files
+*~
+*.swp
+*.swo
+*.tmp
+
+# Node modules (if build tools added later)
+node_modules/
+package-lock.json
+yarn.lock

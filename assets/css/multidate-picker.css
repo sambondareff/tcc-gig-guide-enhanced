@@ -1,0 +1,109 @@
+.acf-multidate-picker-wrapper {
+    max-width: 100%;
+}
+
+.acf-multidate-picker-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.acf-multidate-picker-input:focus {
+    border-color: #0073aa;
+    outline: none;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+.acf-multidate-picker-selected {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+}
+
+.acf-multidate-picker-selected strong {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #23282d;
+}
+
+.acf-multidate-picker-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.acf-multidate-picker-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    margin-bottom: 5px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+.acf-multidate-picker-list li:last-child {
+    margin-bottom: 0;
+}
+
+.acf-multidate-picker-list li.no-dates {
+    color: #999;
+    font-style: italic;
+    justify-content: center;
+}
+
+.acf-multidate-picker-list .date-value {
+    flex: 1;
+    color: #23282d;
+}
+
+.acf-multidate-remove-date {
+    background-color: #dc3232;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: background-color 0.2s;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.acf-multidate-remove-date:hover {
+    background-color: #b32d2e;
+}
+
+.acf-multidate-remove-date:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(220, 50, 50, 0.3);
+}
+
+.acf-multidate-picker-calendar {
+    z-index: 100000;
+}
+
+.flatpickr-calendar.acf-multidate-picker-calendar .flatpickr-day.selected {
+    background-color: #0073aa;
+    border-color: #0073aa;
+}
+
+.flatpickr-calendar.acf-multidate-picker-calendar .flatpickr-day.selected:hover {
+    background-color: #005177;
+    border-color: #005177;
+}
