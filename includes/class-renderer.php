@@ -84,7 +84,11 @@ class TCC_Gig_Guide_Enhanced_Renderer {
                 }
             } elseif ($date_mode === 'rrule' || empty($date_mode)) {
                 // RRULE mode (default if no mode set, for backward compatibility)
-                $rrule_dates = get_field('dates_rrule', $post_id);
+                // Check for old field name 'dates' first (original plugin), then new name 'dates_rrule'
+                $rrule_dates = get_field('dates', $post_id);
+                if (empty($rrule_dates)) {
+                    $rrule_dates = get_field('dates_rrule', $post_id);
+                }
                 if (!empty($rrule_dates)) {
                     $expanded_dates = TCC_Gig_Guide_RRule::expand_dates($rrule_dates, 50, $months_ahead);
                 }
