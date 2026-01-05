@@ -21,7 +21,7 @@ if (!defined('TCC_GG_ENHANCED_URL')) {
     define('TCC_GG_ENHANCED_URL', plugin_dir_url(__FILE__));
 }
 if (!defined('TCC_GG_ENHANCED_VERSION')) {
-    define('TCC_GG_ENHANCED_VERSION', '2.0.1');
+    define('TCC_GG_ENHANCED_VERSION', '2.0.3');
 }
 
 // Includes

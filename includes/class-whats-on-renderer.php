@@ -48,7 +48,7 @@ class TCC_Whats_On_Enhanced_Renderer {
             
             // Get ACF fields
             $alternate_title = get_field('alternate_title', $post_id);
-            $dates_data = get_field('dates', $post_id);
+            $date_mode = get_field('date_entry_mode', $post_id); // 'rrule' or 'manual'
             $start_time = get_field('start_time', $post_id);
             $end_time = get_field('end_time', $post_id);
             $alt_end_time_label = get_field('alternate_end_time_label', $post_id);
@@ -70,9 +70,29 @@ class TCC_Whats_On_Enhanced_Renderer {
             // Get featured image - use original size for animated WebP support
             $featured_image_url = get_the_post_thumbnail_url($post_id, 'full');
             
-            // Expand dates using RRULE with configurable time window
+            // Expand dates based on mode
             $months_ahead = max(1, min(12, (int)$atts['months_ahead'])); // Limit between 1-12 months
-            $expanded_dates = TCC_Gig_Guide_RRule::expand_dates($dates_data, 50, $months_ahead);
+            $expanded_dates = [];
+            
+            // Determine which date mode to use
+            if ($date_mode === 'manual') {
+                // Manual multi-date mode
+                $manual_dates = get_field('dates_manual', $post_id);
+                
+                if (!empty($manual_dates)) {
+                    $expanded_dates = TCC_Gig_Guide_Multidate_Handler::expand_dates($manual_dates, $months_ahead);
+                }
+            } elseif ($date_mode === 'rrule' || empty($date_mode)) {
+                // RRULE mode (default if no mode set, for backward compatibility)
+                // Check for old field name 'dates' first (original plugin), then new name 'dates_rrule'
+                $rrule_dates = get_field('dates', $post_id);
+                if (empty($rrule_dates)) {
+                    $rrule_dates = get_field('dates_rrule', $post_id);
+                }
+                if (!empty($rrule_dates)) {
+                    $expanded_dates = TCC_Gig_Guide_RRule::expand_dates($rrule_dates, 50, $months_ahead);
+                }
+            }
             
             // Safety check: If we get too many dates, something might be wrong
             if (count($expanded_dates) > 50) {

@@ -87,6 +87,7 @@ class TCC_Gig_Guide_Enhanced_Renderer {
             if ($date_mode === 'manual') {
                 // Manual multi-date mode
                 $manual_dates = get_field('dates_manual', $post_id);
+                
                 if (!empty($manual_dates)) {
                     $expanded_dates = TCC_Gig_Guide_Multidate_Handler::expand_dates($manual_dates, $months_ahead);
                 }

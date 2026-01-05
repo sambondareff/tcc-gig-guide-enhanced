@@ -7,9 +7,19 @@
     let fieldInstances = {};
     
     function initializeField($field) {
+        // Ensure $field is a jQuery object
+        $field = $($field);
+        
         let $input = $field.find('.acf-multidate-picker-input');
         let $hidden = $field.find('.acf-multidate-picker-hidden');
         let $list = $field.find('.acf-multidate-picker-list');
+        
+        // Try searching in the entire document as a fallback
+        if (!$input.length) {
+            $input = $('.acf-multidate-picker-input');
+            $hidden = $('.acf-multidate-picker-hidden');
+            $list = $('.acf-multidate-picker-list');
+        }
         
         if (!$input.length) {
             return;
@@ -70,11 +80,24 @@
             }
         });
         
+        // Re-enable the input in case ACF disabled it
+        $input.prop('disabled', false);
+        
         fieldInstances[fieldId] = flatpickrInstance;
         
-        // Handle remove date button clicks
-        $field.on('click', '.acf-multidate-remove-date', function(e) {
+        // Handle remove date button clicks - use event delegation from the wrapper
+        let $wrapper = $input.closest('.acf-multidate-picker-wrapper');
+        if (!$wrapper.length) {
+            $wrapper = $('.acf-multidate-picker-wrapper');
+        }
+        
+        // Remove any existing handlers to avoid duplicates
+        $wrapper.off('click.multidate');
+        
+        $wrapper.on('click.multidate', '.acf-multidate-remove-date', function(e) {
             e.preventDefault();
+            e.stopPropagation();
+            
             let dateToRemove = $(this).data('date');
             let currentDates = JSON.parse($hidden.val() || '[]');
             let newDates = currentDates.filter(function(date) {
@@ -161,17 +184,30 @@
         let dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let dayNamesShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         
-        let result = displayFormat;
-        result = result.replace('F', monthNames[month - 1]);
-        result = result.replace('M', monthNamesShort[month - 1]);
-        result = result.replace('l', dayNames[date.getDay()]);
-        result = result.replace('D', dayNamesShort[date.getDay()]);
-        result = result.replace('Y', year);
-        result = result.replace('y', year.toString().substr(-2));
-        result = result.replace('m', ('0' + month).slice(-2));
-        result = result.replace('n', month);
-        result = result.replace('d', ('0' + day).slice(-2));
-        result = result.replace('j', day);
+        // Build replacement map
+        let replacements = {
+            'F': monthNames[month - 1],
+            'M': monthNamesShort[month - 1],
+            'l': dayNames[date.getDay()],
+            'D': dayNamesShort[date.getDay()],
+            'Y': year.toString(),
+            'y': year.toString().substr(-2),
+            'm': ('0' + month).slice(-2),
+            'n': month.toString(),
+            'd': ('0' + day).slice(-2),
+            'j': day.toString()
+        };
+        
+        // Replace format characters one at a time, in a single pass
+        let result = '';
+        for (let i = 0; i < displayFormat.length; i++) {
+            let char = displayFormat[i];
+            if (replacements.hasOwnProperty(char)) {
+                result += replacements[char];
+            } else {
+                result += char;
+            }
+        }
         
         return result;
     }
@@ -228,6 +264,11 @@
         });
         
         acf.addAction('append_field/type=multidate_picker', function($field) {
+            initializeField($field);
+        });
+        
+        // Handle conditional logic showing the field
+        acf.addAction('show_field/type=multidate_picker', function($field) {
             initializeField($field);
         });
     }

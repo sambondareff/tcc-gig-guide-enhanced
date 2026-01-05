@@ -96,7 +96,7 @@ class acf_field_multidate_picker extends acf_field {
         ?>
         <div class="acf-multidate-picker-wrapper">
             <input type="text" <?php echo acf_esc_atts($atts); ?> readonly />
-            <input type="hidden" name="<?php echo esc_attr($field['name']); ?>" class="acf-multidate-picker-hidden" value="<?php echo esc_attr(json_encode($value)); ?>" />
+            <input type="hidden" name="<?php echo esc_attr($field['name']); ?>" class="acf-multidate-picker-hidden" value="<?php echo esc_attr(json_encode($value, JSON_UNESCAPED_SLASHES)); ?>" />
             <div class="acf-multidate-picker-selected">
                 <strong><?php _e('Selected Dates:', 'acf-multidate-picker'); ?></strong>
                 <ul class="acf-multidate-picker-list">
@@ -155,6 +155,24 @@ class acf_field_multidate_picker extends acf_field {
         );
     }
     
+    public function load_value($value, $post_id, $field) {
+        // Ensure value is an array
+        if (empty($value)) {
+            return array();
+        }
+        
+        if (!is_array($value)) {
+            // Try to decode if it's JSON
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+            return array();
+        }
+        
+        return $value;
+    }
+    
     public function format_value($value, $post_id, $field) {
         // Return empty array if no value
         if (empty($value) || !is_array($value)) {
@@ -165,9 +183,16 @@ class acf_field_multidate_picker extends acf_field {
         return $value;
     }
     
+    public function validate_value($valid, $value, $field, $input) {
+        // Always return valid - we handle empty arrays fine
+        return $valid;
+    }
+    
     public function update_value($value, $post_id, $field) {
         // Decode JSON if it's a string
         if (is_string($value)) {
+            // Remove WordPress slashes first
+            $value = stripslashes($value);
             $value = json_decode($value, true);
         }
         
@@ -217,7 +242,5 @@ class acf_field_multidate_picker extends acf_field {
     }
 }
 
-// Register field type
-add_action('acf/include_field_types', function() {
-    new acf_field_multidate_picker();
-});
+// Initialize field type
+new acf_field_multidate_picker();

@@ -531,8 +531,9 @@
 
 /* List View Styles */
 .tcc-gig-guide.list-view .tcc-gig-grid {
-    display: block;
-    gap: 0;
+    display: block !important;
+    grid-template-columns: none !important;
+    gap: 0 !important;
 }
 
 .tcc-gig-guide.list-view .tcc-gig-card {
